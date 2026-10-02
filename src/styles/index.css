@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "./print.css";
+
+* {
+  font-family: 'Vazirmatn', sans-serif;
+}
+
+html, body, #root {
+  height: 100%;
+}

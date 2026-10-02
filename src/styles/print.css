@@ -1,0 +1,118 @@
+/* ===== چاپ و خروجی PDF ===== */
+
+/* اندازه پیش‌فرض صفحه: A4 عمودی — برای گزارش‌های متنی/مدیریتی */
+@page {
+  size: A4 portrait;
+  margin: 16mm 14mm;
+}
+
+/* صفحه‌ی نام‌گذاری‌شده برای جدول‌ها و گزارش‌های عریض (افقی).
+   پشتیبانی مرورگرها از این تکنیک (CSS Paged Media) یکسان نیست؛
+   در کروم/اج به‌خوبی کار می‌کند، در فایرفاکس ممکن است نادیده گرفته
+   شود — به همین دلیل جدول‌های عریض به‌گونه‌ای طراحی شده‌اند که حتی
+   در حالت عمودی هم (با فونت کوچک‌تر) خوانا بمانند. */
+@page landscape-report {
+  size: A4 landscape;
+  margin: 12mm;
+}
+.print-landscape {
+  page: landscape-report;
+}
+
+@media print {
+  /* عناصر تعاملی/ناوبری که هیچ‌وقت نباید چاپ شوند */
+  .no-print,
+  nav,
+  aside,
+  header button,
+  button.no-print {
+    display: none !important;
+  }
+
+  /* فیلدهای ورودی حذف نمی‌شوند (چون مقدار واقعی داده‌اند)، فقط
+     شکل جعبه‌ی تعاملی‌شان برداشته می‌شود تا مثل متن ساده‌ی گزارش دیده شوند */
+  input, select, textarea {
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    -webkit-appearance: none;
+    pointer-events: none;
+  }
+
+  html, body {
+    background: #fff !important;
+    color: #111 !important;
+    font-size: 11pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* با مخفی‌شدن Sidebar (aside)، ناحیه اصلی به‌طور طبیعی تمام عرض را می‌گیرد؛
+     فقط عرض صریح main را برای اطمینان تضمین می‌کنیم — بدون دست‌کاری کلی .flex
+     که در جاهای دیگر (مثل ردیف آیکون+متن) هم استفاده شده و نباید بشکند. */
+  main { width: 100% !important; max-width: 100% !important; }
+
+  a { color: inherit !important; text-decoration: none !important; }
+
+  /* سایه و پس‌زمینه‌های رنگی روی کارت‌ها در چاپ سنگین و کم‌خوانا هستند */
+  .shadow-sm, .shadow-md, .shadow { box-shadow: none !important; }
+
+  /* عنوان گزارش — فقط در چاپ نمایش داده می‌شود */
+  .print-report-header {
+    display: block !important;
+    margin-bottom: 8mm;
+    border-bottom: 2px solid #111;
+    padding-bottom: 4mm;
+  }
+
+  /* جلوگیری از بریده‌شدن کارت‌ها/جدول‌ها/نمودارها وسط صفحه */
+  .print-avoid-break,
+  table,
+  .recharts-wrapper,
+  .print-card {
+    break-inside: avoid;
+  }
+
+  /* شروع بخش جدید از ابتدای یک صفحه‌ی تازه */
+  .print-page-break {
+    break-before: page;
+  }
+
+  /* سرستون جدول در هر صفحه تکرار شود */
+  thead {
+    display: table-header-group;
+  }
+  tr {
+    break-inside: avoid;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse;
+    font-size: 10pt;
+  }
+  table th, table td {
+    border: 1px solid #ccc;
+    padding: 3pt 6pt;
+  }
+
+  h1 { font-size: 16pt; }
+  h2, .print-h2 { font-size: 13pt; }
+
+  /* شماره صفحه — فقط در مرورگرهایی که از CSS Paged Media Level 3
+     پشتیبانی می‌کنند (مثل چاپ‌به‌PDF کروم) نمایش داده می‌شود.
+     در صورت عدم پشتیبانی، از گزینه Headers/Footers خود پنجره چاپ
+     مرورگر برای شماره صفحه استفاده کنید. */
+  @page {
+    @bottom-center {
+      content: "صفحه " counter(page) " از " counter(pages);
+      font-size: 8pt;
+      color: #666;
+    }
+  }
+}
+
+/* پیش‌نمایش گزارش چاپی روی صفحه (قبل از زدن دکمه چاپ) */
+.print-report-header {
+  display: none;
+}
